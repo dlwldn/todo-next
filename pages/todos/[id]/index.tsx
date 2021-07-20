@@ -16,7 +16,6 @@ const Id = () => {
   const { detailPost, loading, error } = useSelector((state: RootState) => state.post);
 
   useEffect(()=> {
-    console.log("유즈이펙트")
     dispatch(getPostDetailThunk());
   }, [router])
 
