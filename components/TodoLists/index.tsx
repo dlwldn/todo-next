@@ -3,19 +3,16 @@ import React from 'react';
 import { TodoListsWrap } from './style';
 
 import TodoList from '../TodoList';
+import { IPostObject } from '../../typings/db';
 
-const testArray = [
-  {id: 1, content: "dfdf"},
-  {id: 2, content: "dfdf"},
-  {id: 3, content: "dfdf"},
-  {id: 4, content: "dfdf"},
-  {id: 5, content: "dfdf"},
-]
+interface Props {
+  list: IPostObject[]
+}
 
-const TodoLists = () => {
+const TodoLists = ({ list }: Props) => {
   return (
     <TodoListsWrap>
-      {testArray.map((item, index)=> {
+      {list?.map((item: IPostObject, index: number)=> {
         return (
           <TodoList key={item.id + index} listItem={item}/>
         )

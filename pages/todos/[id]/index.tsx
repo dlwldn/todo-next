@@ -1,21 +1,31 @@
-import React from 'react';
-
-import { ButtonsWrap, DeleteButton, ModifyButton } from './style';
+import React, { useEffect } from 'react';
+import { useRouter } from 'next/router';
+import { useSelector, useDispatch } from 'react-redux';
 
 import HomeLayout from '../../../layouts/HomeLayout';
 import TodoList from '../../../components/TodoList';
+import { RootState } from '../../../store';
+import DeleteModifyButton from '../../../components/DeleteModifyButton';
+import { getPostDetailThunk } from '../../../store/api/thunk';
+import Loading from '../../../components/Loading';
+import Error from '../../../components/Error';
 
 const Id = () => {
-  const item = {id: 1, content: "SDfsf"};
+  const router = useRouter();
+  const dispatch = useDispatch();
+  const { detailPost, loading, error } = useSelector((state: RootState) => state.post);
+
+  useEffect(()=> {
+    dispatch(getPostDetailThunk(router.query.id));
+  }, [router])
+
+  if(loading) return <HomeLayout><Loading /></HomeLayout>
+  if(error) return <HomeLayout><Error /></HomeLayout>
 
   return (
     <HomeLayout>
-      <TodoList listItem={item}/>
-
-      <ButtonsWrap>
-        <DeleteButton>DELETE</DeleteButton>
-        <ModifyButton>MODIFY</ModifyButton>
-      </ButtonsWrap>
+      <TodoList listItem={detailPost}/>
+      <DeleteModifyButton />
     </HomeLayout>
   )
 }

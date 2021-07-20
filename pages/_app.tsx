@@ -2,11 +2,8 @@
 import type { AppProps } from 'next/app';
 import GlobalStyles from '../styles/Globalstyles';
 import { Provider } from 'react-redux';
-import { createStore } from 'redux';
-import rootReducer from '../store';
-import { composeWithDevTools } from 'redux-devtools-extension';
-
-const store = createStore(rootReducer, composeWithDevTools());
+import store from '../store';
+import wrapper from '../store';
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
@@ -16,4 +13,5 @@ function MyApp({ Component, pageProps }: AppProps) {
     </Provider>
   ) 
 }
+
 export default MyApp

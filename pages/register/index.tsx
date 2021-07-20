@@ -1,15 +1,22 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import axios from 'axios';
+import { useSelector, useDispatch } from 'react-redux';
 
 import { RegisterWrap, RegisterContentWrap, InputWrap } from './style';
 
 import AppLayout from '../../layouts/AppLayout';
 import useInput from '../../hooks/useInput';
+import { setRegisterThunk } from '../../store/api/thunk';
+import { RootState } from '../../store';
+import Loading from '../../components/Loading';
+import Error from '../../components/Error';
+import { registerInit } from '../../store/modules/user';
 
 const Register = () => {
   const router = useRouter();
+  const dispatch = useDispatch();
+  const { isRegister, loading, error } = useSelector((state: RootState) => state.user);
 
   const [username, onChangeUsername] = useInput("");
   const [password, onChangePassword] = useInput("");
@@ -17,6 +24,10 @@ const Register = () => {
   const [isCollectUsername, setIsCollectUsername] = useState(false);
   const [isCollectPassword, setIsCollectPassword] = useState(false);
   const [isCollectPasswordCheck, setIsCollectPasswordCheck] = useState(false);
+
+  useEffect(()=> {
+    dispatch(registerInit());
+  }, [isRegister])
 
   const onClickRegister = useCallback((e)=> {
     e.preventDefault();
@@ -31,19 +42,16 @@ const Register = () => {
     }
 
     if(username.length > 0 && password.length >= 4 && (passwordCheck === password)) {
-      axios.post('http://localhost:9090/auth/register', {username: username, password: password})
-      .then((res)=> {
-        console.log(res);
-        if(res.data.success) {
-          router.push('/login')
-        }
-      })
-      .catch((err)=> {
-        console.log(err);
-      }) 
+      dispatch(setRegisterThunk(username, password));
     }
   }, [username, password, passwordCheck])
 
+  if(loading) return <AppLayout><Loading /></AppLayout>
+  if(error) return <AppLayout><Error /></AppLayout>
+  if(isRegister) {
+    router.push('/login');
+    return <div></div>
+  }
   return (
     <AppLayout>
       <RegisterWrap>

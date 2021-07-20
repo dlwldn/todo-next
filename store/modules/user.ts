@@ -1,28 +1,137 @@
-const SET_USER_DATA = 'user/SET_USER_DATA' as const;
+import { IUser } from "../../typings/db";
 
-export const setUserData = () => ({
-  type: SET_USER_DATA
+const LOGOUT_ACTION = 'user/LOGOUT_ACTION' as const;
+const LOGIN_ACTION_REQUEST = 'user/LOGIN_ACTION_REQUEST' as const;
+const LOGIN_ACTION_SUCCESS = 'user/LOGIN_ACTION_SUCCESS' as const;
+const LOGIN_ACTION_FAILURE = 'user/LOGIN_ACTION_FAILURE' as const;
+const REGISTER_INIT = 'user/REGISTER_INIT' as const;
+const REGISTER_ACTION_REQUEST = 'user/REGISTER_ACTION_REQUEST' as const;
+const REGISTER_ACTION_SUCCESS = 'user/REGISTER_ACTION_SUCCESS' as const;
+const REGISTER_ACTION_FAILURE = 'user/REGISTER_ACTION_FAILURE' as const;
+
+export const loginActionRequest = () => ({
+  type: LOGIN_ACTION_REQUEST
 })
 
-type UserAction = 
-  | ReturnType<typeof setUserData>;
+export const loginActionSuccess = (token: string) => ({
+  type: LOGIN_ACTION_SUCCESS,
+  payload: token
+})
 
-type UserState = {
-  userData: object
+export const loginActionFailure = (error: object) => ({
+  type: LOGIN_ACTION_FAILURE,
+  payload: error
+})
+
+export const registerInit = () => ({
+  type: REGISTER_INIT
+})
+
+export const registerActionRequest = () => ({
+  type: REGISTER_ACTION_REQUEST
+})
+
+export const registerActionSuccess = (success: boolean) => ({
+  type: REGISTER_ACTION_SUCCESS,
+  payload: success
+})
+
+export const registerActionFailure = (error: object) => ({
+  type: REGISTER_ACTION_FAILURE,
+  payload: error
+})
+
+export const setLogout = () => ({ type: LOGOUT_ACTION })
+
+export type UserAction = 
+  | ReturnType<typeof setLogout>
+  | ReturnType<typeof loginActionRequest>
+  | ReturnType<typeof loginActionSuccess>
+  | ReturnType<typeof loginActionFailure>
+  | ReturnType<typeof registerInit>
+  | ReturnType<typeof registerActionRequest>
+  | ReturnType<typeof registerActionSuccess>
+  | ReturnType<typeof registerActionFailure>;
+  
+interface UserState {
+  user: IUser;
+  loading: boolean;
+  error: null | object;
+  isRegister: boolean;
 }
 
 const initialState: UserState = {
-  userData: {}
-}
+  user: {
+    token: "",
+    isLogin: false
+  },
 
+  loading: false,
+  error: null,
+  isRegister: false
+}
 
 const reducer = (state: UserState = initialState, action: UserAction): UserState => {
   switch(action.type) {
-    case SET_USER_DATA:
+    case LOGOUT_ACTION:
       return {
         ...state,
-        userData: state.userData
+        user: {
+          ...state.user,
+          token: "",
+          isLogin: false
+        }
       }
+
+    case LOGIN_ACTION_REQUEST:
+      return {
+        ...state,
+        loading: true
+      }
+
+    case LOGIN_ACTION_SUCCESS:
+      return {
+        ...state,
+        user: {
+          ...state.user,
+          token: action.payload,
+          isLogin: true
+        },
+        loading: false
+      }
+
+    case LOGIN_ACTION_FAILURE:
+      return {
+        ...state,
+        loading: false,
+        error: action.payload
+      }
+
+    case REGISTER_INIT:
+      return {
+        ...state,
+        isRegister: false
+      }
+
+    case REGISTER_ACTION_REQUEST:
+      return {
+        ...state,
+        loading: true
+      }
+
+    case REGISTER_ACTION_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        isRegister: action.payload
+      }
+
+    case REGISTER_ACTION_FAILURE:
+      return {
+        ...state,
+        error: action.payload
+      }
+
     default:
       return state
   }
