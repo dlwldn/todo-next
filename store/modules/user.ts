@@ -4,7 +4,6 @@ const LOGOUT_ACTION = 'user/LOGOUT_ACTION' as const;
 const LOGIN_ACTION_REQUEST = 'user/LOGIN_ACTION_REQUEST' as const;
 const LOGIN_ACTION_SUCCESS = 'user/LOGIN_ACTION_SUCCESS' as const;
 const LOGIN_ACTION_FAILURE = 'user/LOGIN_ACTION_FAILURE' as const;
-const REGISTER_INIT = 'user/REGISTER_INIT' as const;
 const REGISTER_ACTION_REQUEST = 'user/REGISTER_ACTION_REQUEST' as const;
 const REGISTER_ACTION_SUCCESS = 'user/REGISTER_ACTION_SUCCESS' as const;
 const REGISTER_ACTION_FAILURE = 'user/REGISTER_ACTION_FAILURE' as const;
@@ -23,17 +22,12 @@ export const loginActionFailure = (error: object) => ({
   payload: error
 })
 
-export const registerInit = () => ({
-  type: REGISTER_INIT
-})
-
 export const registerActionRequest = () => ({
   type: REGISTER_ACTION_REQUEST
 })
 
-export const registerActionSuccess = (success: boolean) => ({
-  type: REGISTER_ACTION_SUCCESS,
-  payload: success
+export const registerActionSuccess = () => ({
+  type: REGISTER_ACTION_SUCCESS
 })
 
 export const registerActionFailure = (error: object) => ({
@@ -48,16 +42,14 @@ export type UserAction =
   | ReturnType<typeof loginActionRequest>
   | ReturnType<typeof loginActionSuccess>
   | ReturnType<typeof loginActionFailure>
-  | ReturnType<typeof registerInit>
   | ReturnType<typeof registerActionRequest>
   | ReturnType<typeof registerActionSuccess>
-  | ReturnType<typeof registerActionFailure>;
+  | ReturnType<typeof registerActionFailure>
   
 interface UserState {
   user: IUser;
   loading: boolean;
   error: null | object;
-  isRegister: boolean;
 }
 
 const initialState: UserState = {
@@ -68,7 +60,6 @@ const initialState: UserState = {
 
   loading: false,
   error: null,
-  isRegister: false
 }
 
 const reducer = (state: UserState = initialState, action: UserAction): UserState => {
@@ -86,7 +77,7 @@ const reducer = (state: UserState = initialState, action: UserAction): UserState
     case LOGIN_ACTION_REQUEST:
       return {
         ...state,
-        loading: true
+        loading: true,
       }
 
     case LOGIN_ACTION_SUCCESS:
@@ -107,12 +98,6 @@ const reducer = (state: UserState = initialState, action: UserAction): UserState
         error: action.payload
       }
 
-    case REGISTER_INIT:
-      return {
-        ...state,
-        isRegister: false
-      }
-
     case REGISTER_ACTION_REQUEST:
       return {
         ...state,
@@ -122,13 +107,13 @@ const reducer = (state: UserState = initialState, action: UserAction): UserState
     case REGISTER_ACTION_SUCCESS:
       return {
         ...state,
-        loading: false,
-        isRegister: action.payload
+        loading: false
       }
 
     case REGISTER_ACTION_FAILURE:
       return {
         ...state,
+        loading: false,
         error: action.payload
       }
 

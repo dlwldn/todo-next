@@ -1,62 +1,34 @@
 import React, { useCallback, useEffect } from 'react';
-import axios from 'axios';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { useRouter } from 'next/router';
 
 import { AddWrap } from './style';
 
 import HomeLayout from '../../../layouts/HomeLayout';
 import useInput from '../../../hooks/useInput';
-import { API_TODOS } from '../../../utils/api';
 import { RootState } from '../../../store';
+import { postModifyThunk, postWriteThunk } from '../../../store/api/thunk';
 
 const Add = () => {
   const router = useRouter();
-  const { user } = useSelector((state: RootState) => state.user);
+  const dispatch = useDispatch();
   const { detailPost } = useSelector((state: RootState) => state.post);
   const [content, onChangeContent, setContent] = useInput("");
 
   useEffect(()=> {
-    console.log(router.pathname)
     if(router.pathname !== '/todos/add') {
       setContent(detailPost.content);
     }
-  }, [])
+  }, [router, detailPost])
 
   const onClickWrite = useCallback((e)=> {
     e.preventDefault();
 
     if(router.pathname === '/todos/add') {
-      axios.post(API_TODOS, {content: content}, {
-        headers: {
-          'x-auth-token': user.token
-        }
-      })
-      .then((res)=> {
-        console.log(res);
-        router.back();
-      })
-      .catch((err)=> {
-        console.log(err);
-      })
+      dispatch(postWriteThunk(content));
     } else {
-      axios.put(`${API_TODOS}/${detailPost.id}`, {content: content}, {
-        data: {
-          id: detailPost.id
-        },
-        headers: {
-          'x-auth-token': user.token
-        }
-      })
-      .then((res)=> {
-        console.log(res);
-        router.back();
-      })
-      .catch((err)=> {
-        console.log(err);
-      })
+      dispatch(postModifyThunk(content));
     }
-    
   }, [])
 
   return (

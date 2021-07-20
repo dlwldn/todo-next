@@ -9,6 +9,9 @@ const GET_POST_DETAIL_ACTION_FAILURE = 'post/GET_POST_DETAIL_ACTION_FAILURE' as 
 const POST_WRITE_ACTION_REQUEST = 'post/POST_WRITE_ACTION_REQUEST' as const;
 const POST_WRITE_ACTION_SUCCESS = 'post/POST_WRITE_ACTION_SUCCESS' as const;
 const POST_WRITE_ACTION_FAILURE = 'post/POST_WRITE_ACTION_FAILURE' as const;
+const POST_DELETE_ACTION_REQUEST = 'post/POST_DELETE_ACTION_REQUEST' as const;
+const POST_DELETE_ACTION_SUCCESS = 'post/POST_DELETE_ACTION_SUCCESS' as const;
+const POST_DELETE_ACTION_FAILURE = 'post/POST_DELETE_ACTION_FAILURE' as const;
 
 
 export const getPostActionRequest = () => ({
@@ -47,8 +50,22 @@ export const postWriteActionSuccess = () => ({
   type: POST_WRITE_ACTION_SUCCESS
 })
 
-export const postWriteActionFailure = () => ({
-  type: POST_WRITE_ACTION_FAILURE
+export const postWriteActionFailure = (error: object) => ({
+  type: POST_WRITE_ACTION_FAILURE,
+  payload: error
+})
+
+export const postDeleteActionRequest = () => ({
+  type: POST_DELETE_ACTION_REQUEST
+})
+
+export const postDeleteActionSuccess = () => ({
+  type: POST_DELETE_ACTION_SUCCESS
+})
+
+export const postDeleteActionFailure = (error: object) => ({
+  type: POST_DELETE_ACTION_FAILURE,
+  payload: error
 })
 
 const initialState = {
@@ -73,7 +90,7 @@ interface PostState {
   post: IPost;
   detailPost: IPostObject;
   loading: boolean;
-  error: null | object
+  error: null | object;
 }
 
 export type PostAction = 
@@ -82,7 +99,13 @@ export type PostAction =
   | ReturnType<typeof getPostActionFailure>
   | ReturnType<typeof getPostDetailActionRequest>
   | ReturnType<typeof getPostDetailActionSuccess>
-  | ReturnType<typeof getPostDetailActionFailure>;
+  | ReturnType<typeof getPostDetailActionFailure>
+  | ReturnType<typeof postWriteActionRequest>
+  | ReturnType<typeof postWriteActionSuccess>
+  | ReturnType<typeof postWriteActionFailure>
+  | ReturnType<typeof postDeleteActionRequest>
+  | ReturnType<typeof postDeleteActionSuccess>
+  | ReturnType<typeof postDeleteActionFailure>
 
 const reducer = (state: PostState = initialState, action: PostAction): PostState => {
   switch(action.type) {
@@ -105,6 +128,7 @@ const reducer = (state: PostState = initialState, action: PostAction): PostState
     case GET_POST_ACTION_FAILURE:
       return {
         ...state,
+        loading: false,
         error: action.payload
       }
 
@@ -127,9 +151,50 @@ const reducer = (state: PostState = initialState, action: PostAction): PostState
     case GET_POST_DETAIL_ACTION_FAILURE:
       return {
         ...state,
+        loading: false,
+        error: action.payload
+      }
+
+    case POST_WRITE_ACTION_REQUEST:
+      return {
+        ...state,
+        loading: true
+      }
+    
+    case POST_WRITE_ACTION_SUCCESS:
+      return {
+        ...state,
+        loading: false
+      }
+
+    case POST_WRITE_ACTION_FAILURE:
+      return {
+        ...state,
+        loading: false,
+        error: action.payload
+      }
+    
+    case POST_DELETE_ACTION_REQUEST:
+      return {
+        ...state,
+        loading: true
+      }
+
+    case POST_DELETE_ACTION_SUCCESS:
+      return {
+        ...state,
+        loading: false
+      }
+
+    case POST_DELETE_ACTION_FAILURE:
+      return {
+        ...state,
+        loading: false,
         error: action.payload
       }
   
+
+
     default:
       return state;
   }

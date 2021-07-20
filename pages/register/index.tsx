@@ -1,6 +1,5 @@
-import React, { useCallback, useState, useEffect } from 'react';
+import React, { useCallback, useState } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/router';
 import { useSelector, useDispatch } from 'react-redux';
 
 import { RegisterWrap, RegisterContentWrap, InputWrap } from './style';
@@ -11,12 +10,10 @@ import { setRegisterThunk } from '../../store/api/thunk';
 import { RootState } from '../../store';
 import Loading from '../../components/Loading';
 import Error from '../../components/Error';
-import { registerInit } from '../../store/modules/user';
 
 const Register = () => {
-  const router = useRouter();
   const dispatch = useDispatch();
-  const { isRegister, loading, error } = useSelector((state: RootState) => state.user);
+  const { loading, error } = useSelector((state: RootState) => state.user);
 
   const [username, onChangeUsername] = useInput("");
   const [password, onChangePassword] = useInput("");
@@ -24,10 +21,6 @@ const Register = () => {
   const [isCollectUsername, setIsCollectUsername] = useState(false);
   const [isCollectPassword, setIsCollectPassword] = useState(false);
   const [isCollectPasswordCheck, setIsCollectPasswordCheck] = useState(false);
-
-  useEffect(()=> {
-    dispatch(registerInit());
-  }, [isRegister])
 
   const onClickRegister = useCallback((e)=> {
     e.preventDefault();
@@ -48,10 +41,7 @@ const Register = () => {
 
   if(loading) return <AppLayout><Loading /></AppLayout>
   if(error) return <AppLayout><Error /></AppLayout>
-  if(isRegister) {
-    router.push('/login');
-    return <div></div>
-  }
+
   return (
     <AppLayout>
       <RegisterWrap>

@@ -1,5 +1,4 @@
-import React, { useCallback } from 'react';
-import Link from 'next/link';
+import React, { useEffect, useCallback, useState } from 'react';
 import { useRouter } from 'next/router';
 
 import { TodoListWrap } from './style';
@@ -15,6 +14,14 @@ const TodoList = ({ listItem }: Props) => {
   const router = useRouter();
   const date = dayjs(listItem.createdAt);
 
+  const [isHome, setIsHome] = useState(false);
+
+  useEffect(()=> {
+    if(router.pathname === '/') {
+      setIsHome(true);
+    }
+  }, [router])
+
   const onClickList = useCallback(() => {
     if(router.pathname === "/") {
       router.push(`/todos/[id]`, `/todos/${listItem.id}`)
@@ -22,11 +29,9 @@ const TodoList = ({ listItem }: Props) => {
   }, [router])
 
   return (
-    <TodoListWrap onClick={onClickList}>
-      {/* <Link href={`/todos/[id]`} as={`/todos/${listItem.id}`}> */}
-        <span>{date.format("YYYY-MM-DD HH:mm")}</span>
-        <p>{listItem.content}</p>
-      {/* </Link>   */}
+    <TodoListWrap onClick={onClickList} isHome={isHome}>
+      <span>{date.format("YYYY-MM-DD HH:mm")}</span>
+      <p>{listItem.content}</p>
     </TodoListWrap>
   )
 }

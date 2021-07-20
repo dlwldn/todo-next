@@ -1,10 +1,18 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
 import { AddWrap } from './style';
 import useInput from '../../hooks/useInput';
 
-const WriteModifyForm = () => {
+interface Props {
+  contentData: string
+}
+
+const WriteModifyForm = ({ contentData }: Props) => {
   const [content, onChangeContent, setContent] = useInput("");
+
+  useEffect(()=> {
+    setContent(contentData)
+  })
 
   return (
     <AddWrap>

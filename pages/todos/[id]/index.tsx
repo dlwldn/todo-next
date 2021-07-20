@@ -16,7 +16,8 @@ const Id = () => {
   const { detailPost, loading, error } = useSelector((state: RootState) => state.post);
 
   useEffect(()=> {
-    dispatch(getPostDetailThunk(router.query.id));
+    console.log("유즈")
+    dispatch(getPostDetailThunk());
   }, [router])
 
   if(loading) return <HomeLayout><Loading /></HomeLayout>
@@ -24,6 +25,7 @@ const Id = () => {
 
   return (
     <HomeLayout>
+      {console.log("렌더링")}
       <TodoList listItem={detailPost}/>
       <DeleteModifyButton />
     </HomeLayout>

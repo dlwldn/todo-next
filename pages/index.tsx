@@ -19,16 +19,14 @@ const Home = () => {
     dispatch(getPostThunk());
   }, [])
 
-  if(loading) return <AppLayout><Loading /></AppLayout>
-  if(error) return <AppLayout><Error /></AppLayout>
+  if(loading) return <HomeLayout><Loading /></HomeLayout>
+  if(error) return <HomeLayout><Error /></HomeLayout>
 
   return (
-    <AppLayout>
-      <HomeLayout>
-        <CreateButton />
-        <TodoLists list={post.items}/>
-      </HomeLayout>
-    </AppLayout>
+    <HomeLayout>
+      <CreateButton />
+      <TodoLists list={post.items}/>
+    </HomeLayout>
   )
 }
 
