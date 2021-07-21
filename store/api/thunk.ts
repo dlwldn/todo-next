@@ -11,6 +11,8 @@ export const setLoginThunk = (username: string, password: string): ThunkAction<v
     dispatch(loginActionRequest())
     axios.post(API_LOGIN, {username: username, password: password})
     .then((res)=> {
+      // document.cookie = `login=${res.data.token};expires=1`;
+      window.localStorage.setItem("login", JSON.stringify(res.data.token));
       dispatch(loginActionSuccess(res.data.token));
     })
     .catch((err)=> {
