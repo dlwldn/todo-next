@@ -1,10 +1,11 @@
 import React, { useEffect, useCallback, useState } from 'react';
 import { useRouter } from 'next/router';
+import dayjs from 'dayjs';
 
 import { TodoListWrap } from './style';
 
 import { IPostObject } from '../../typings/db';
-import dayjs from 'dayjs';
+
 
 interface Props {
   listItem: IPostObject;

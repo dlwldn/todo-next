@@ -1,9 +1,12 @@
-import React from 'react';
-import Add from '../../add';
+
+import WriteModifyForm from '../../../../components/WriteModifyForm';
+import HomeLayout from '../../../../layouts/HomeLayout';
 
 const Modify = () => {
   return (
-    <Add />
+    <HomeLayout>
+      <WriteModifyForm />
+    </HomeLayout>
   )
 }
 

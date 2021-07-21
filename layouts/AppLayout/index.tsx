@@ -1,7 +1,8 @@
 import React from 'react';
+
 import { AppLayoutWrap } from './style';
 
-type AppLayoutProps = {
+interface AppLayoutProps {
   children: React.ReactNode
 }
 

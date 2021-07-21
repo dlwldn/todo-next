@@ -1,11 +1,11 @@
 import React from 'react';
-import Header from '../../components/Header';
 
 import { HomeWrap } from './style';
 
 import AppLayout from '../AppLayout';
+import Header from '../../components/Header';
 
-type HomeLayoutProps = {
+interface HomeLayoutProps {
   children: React.ReactNode
 }
 

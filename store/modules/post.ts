@@ -13,6 +13,11 @@ const POST_DELETE_ACTION_REQUEST = 'post/POST_DELETE_ACTION_REQUEST' as const;
 const POST_DELETE_ACTION_SUCCESS = 'post/POST_DELETE_ACTION_SUCCESS' as const;
 const POST_DELETE_ACTION_FAILURE = 'post/POST_DELETE_ACTION_FAILURE' as const;
 
+const GET_POST_SCROLL_ACTION_INIT = 'post/GET_POST_SCROLL_ACTION_INIT' as const;
+const GET_POST_SCROLL_ACTION_REQUEST = 'post/GET_POST_SCROLL_ACTION_REQUEST' as const;
+const GET_POST_SCROLL_ACTION_SUCCESS = 'post/GET_POST_SCROLL_ACTION_SUCCESS' as const;
+const GET_POST_SCROLL_ACTION_FAILURE = 'post/GET_POST_SCROLL_ACTION_FAILURE' as const;
+
 
 export const getPostActionRequest = () => ({
   type: GET_POST_ACTION_REQUEST
@@ -68,6 +73,24 @@ export const postDeleteActionFailure = (error: object) => ({
   payload: error
 })
 
+export const getPostScollActionInit = () => ({
+  type: GET_POST_SCROLL_ACTION_INIT,
+})
+
+export const getPostScrollActionRequest = () => ({
+  type: GET_POST_SCROLL_ACTION_REQUEST
+})
+
+export const getPostScrollActionSuccess = (post: Array<IPostObject>) => ({
+  type: GET_POST_SCROLL_ACTION_SUCCESS,
+  payload: post
+})
+
+export const getPostScrollActionFailure = (error: object) => ({
+  type: GET_POST_SCROLL_ACTION_FAILURE,
+  payload: error
+})
+
 const initialState = {
   post: {
     items: [],
@@ -83,7 +106,10 @@ const initialState = {
   },
 
   loading: false,
-  error: null
+  error: null,
+  currPage: 1,
+  scrollLoading: false,
+  scrollError: null
 }
 
 interface PostState {
@@ -91,6 +117,10 @@ interface PostState {
   detailPost: IPostObject;
   loading: boolean;
   error: null | object;
+  
+  currPage: number;
+  scrollLoading: boolean;
+  scrollError: null | object;
 }
 
 export type PostAction = 
@@ -106,6 +136,10 @@ export type PostAction =
   | ReturnType<typeof postDeleteActionRequest>
   | ReturnType<typeof postDeleteActionSuccess>
   | ReturnType<typeof postDeleteActionFailure>
+  | ReturnType<typeof getPostScollActionInit>
+  | ReturnType<typeof getPostScrollActionRequest>
+  | ReturnType<typeof getPostScrollActionSuccess>
+  | ReturnType<typeof getPostScrollActionFailure>
 
 const reducer = (state: PostState = initialState, action: PostAction): PostState => {
   switch(action.type) {
@@ -192,7 +226,39 @@ const reducer = (state: PostState = initialState, action: PostAction): PostState
         loading: false,
         error: action.payload
       }
+
+    case GET_POST_SCROLL_ACTION_INIT:
+      return {
+        ...state,
+        currPage: initialState.currPage
+      }
   
+    case GET_POST_SCROLL_ACTION_REQUEST:
+      return {
+        ...state,
+        scrollLoading: true
+      }
+
+    case GET_POST_SCROLL_ACTION_SUCCESS:
+      return {
+        ...state,
+        currPage: state.currPage + 1,
+        post: {
+          ...state.post,
+          items: [
+            ...state.post.items,
+            ...action.payload
+          ]
+        },
+        scrollLoading: false
+      }
+
+    case GET_POST_SCROLL_ACTION_FAILURE:
+      return {
+        ...state,
+        scrollLoading: true,
+        error: action.payload
+      }
 
 
     default:

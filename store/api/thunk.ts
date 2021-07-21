@@ -3,7 +3,7 @@ import { ThunkAction } from "redux-thunk";
 import { RootState } from "..";
 import { API_LOGIN, API_TODOS, API_REGISTER } from "../../utils/api";
 import { loginActionFailure, loginActionRequest, loginActionSuccess, registerActionFailure, registerActionRequest, registerActionSuccess, UserAction } from "../modules/user";
-import { getPostActionRequest, getPostActionSuccess, getPostActionFailure, PostAction, getPostDetailActionRequest, getPostDetailActionSuccess, getPostDetailActionFailure, postWriteActionRequest, postWriteActionSuccess, postWriteActionFailure, postDeleteActionRequest, postDeleteActionSuccess, postDeleteActionFailure} from "../modules/post";
+import { getPostActionRequest, getPostActionSuccess, getPostActionFailure, PostAction, getPostDetailActionRequest, getPostDetailActionSuccess, getPostDetailActionFailure, postWriteActionRequest, postWriteActionSuccess, postWriteActionFailure, postDeleteActionRequest, postDeleteActionSuccess, postDeleteActionFailure, getPostScrollActionRequest, getPostScrollActionSuccess, getPostScollActionInit} from "../modules/post";
 import router from "next/router";
 
 export const setLoginThunk = (username: string, password: string): ThunkAction<void, RootState, null, UserAction> => {
@@ -37,8 +37,9 @@ export const setRegisterThunk = (username: string, password: string): ThunkActio
 
 export const getPostThunk = (): ThunkAction<void, RootState, null, PostAction> => {
   return async dispatch => {
+    dispatch(getPostScollActionInit());
     dispatch(getPostActionRequest())
-    axios.get(API_TODOS)
+    axios.get(`${API_TODOS}?page=0`)
     .then((res)=> {
       setTimeout(()=> dispatch(getPostActionSuccess(res.data)), 1000);
     })
@@ -124,4 +125,19 @@ export const postDeleteThunk = (): ThunkAction<void, RootState, null, PostAction
   .catch((err)=> {
     dispatch(postDeleteActionFailure(err));
   })
+}
+
+export const getPostScrollThunk = (): ThunkAction<void, RootState, null, PostAction> => async (dispatch, getState) => {
+  const { currPage } = getState().post;
+
+  dispatch(getPostScrollActionRequest())
+  axios.get(`${API_TODOS}?page=${currPage}`)
+    .then((res)=> {
+      if(res.data.items.length !== 0) {
+        setTimeout(()=> dispatch(getPostScrollActionSuccess(res.data.items)), 1000);
+      } 
+    })
+    .catch((err)=> {
+      dispatch(getPostActionFailure(err));
+    })
 }

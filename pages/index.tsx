@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import AppLayout from '../layouts/AppLayout';
 import TodoLists from '../components/TodoLists';
 import CreateButton from '../components/CreateButton';
 import HomeLayout from '../layouts/HomeLayout';
@@ -14,7 +13,7 @@ import Error from '../components/Error';
 const Home = () => {
   const dispatch = useDispatch();
   const { post, loading, error } = useSelector((state: RootState) => state.post);
-
+  
   useEffect(()=> {
     dispatch(getPostThunk());
   }, [])
@@ -25,7 +24,7 @@ const Home = () => {
   return (
     <HomeLayout>
       <CreateButton />
-      <TodoLists list={post.items}/>
+      <TodoLists list={post.items} />
     </HomeLayout>
   )
 }
