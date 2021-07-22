@@ -17,11 +17,11 @@ const Home = () => {
   const { user } = useSelector((state: RootState) => state.user);
   
   useEffect(()=> {
-    const loginToken = window.localStorage.getItem("login");
+    // const loginToken = window.localStorage.getItem("login");
   
-    if(loginToken && !user.isLogin) {
-      dispatch(loginActionSuccess(JSON.parse(loginToken)));
-    }
+    // if(loginToken && !user.isLogin) {
+    //   dispatch(loginActionSuccess(JSON.parse(loginToken)));
+    // }
 
     dispatch(getPostThunk());
   }, [])

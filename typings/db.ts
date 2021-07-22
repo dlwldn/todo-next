@@ -1,5 +1,5 @@
 export interface IUser {
-  token: string;
+  token: string | null;
   isLogin: boolean;
 }
 

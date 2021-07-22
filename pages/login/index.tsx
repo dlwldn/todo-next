@@ -1,6 +1,6 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState, useEffect } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/router';
+import router from 'next/router';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { LoginWrap, LoginContentWrap, InputWrap } from './style';
@@ -13,7 +13,6 @@ import Loading from '../../components/Loading';
 import Error from '../../components/Error';
 
 const Login = () => {
-  const router = useRouter();
   const dispatch = useDispatch();
   const { user, loading, error } = useSelector((state: RootState) => state.user);
 
@@ -21,6 +20,12 @@ const Login = () => {
   const [password, onChangePassword] = useInput("");
   const [isCollectUsername, setIsCollectUsername] = useState(false);
   const [isCollectPassword, setIsCollectPassword] = useState(false);
+
+  useEffect(()=> {
+    if(user.isLogin) {
+      router.push('/')
+    }
+  }, [user, router])
 
   const onClickLogin = useCallback((e)=> {
     e.preventDefault();
@@ -39,8 +44,7 @@ const Login = () => {
   if(loading) return <AppLayout><Loading /></AppLayout>
   if(error) return <AppLayout><Error /></AppLayout>
   if(user.isLogin) {
-    router.push('/');
-    return <div></div>
+    return null
   } else {
     return (
       <AppLayout>
